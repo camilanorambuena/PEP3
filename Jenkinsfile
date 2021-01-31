@@ -7,6 +7,7 @@ pipeline{
     }
     tools{
         maven "mvn"
+        docker "docker"
     }
     stages{
         stage('Clonar de github'){
