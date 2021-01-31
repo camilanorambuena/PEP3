@@ -1,2 +1,0 @@
-com/pep3/tingeso/TingesoApplication.java
- com.pep3.tingeso.TingesoApplication
