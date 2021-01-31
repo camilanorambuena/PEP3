@@ -12,18 +12,25 @@ pipeline{
         maven "M1"
         dockerTool "Docker"
     }
-    
 
     stages{
 
-        stage ('Clone and Build with Maven') {
-            git url: 'https://github.com/camilanorambuena/PEP3.git', branch: 'main'
-            withMaven {
-            sh "mvn clean package"
-
-            sh "mvn spotbugs:spotbugs"
-            } 
-        } 
+        stage('Clone'){
+            steps{
+                git url: 'https://github.com/camilanorambuena/PEP3.git', branch: 'main'
+            }
+        }
+        stage('Build and Unit Tests'){
+            steps{
+                sh "mvn clean package"
+            }
+        }
+        stage('Stationary Analysis'){
+            steps{
+                sh "mvn spotbugs:spotbugs"
+                
+            }
+        }
 
         stage('Mega-Linter') {
             
