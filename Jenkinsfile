@@ -21,26 +21,6 @@ pipeline{
             }
         }
 
-        stage ('Construyendo imagen (Docker)') {
-            steps{
-                script {
-                    application = docker.build("camilanorambuena/docker-image:${env.BUILD_ID}")
-                }
-            }
-        }
-
-        stage ('imagen Push') {
-            steps {
-                
-                script {
-                    docker.withRegistry('', registryCredential) {
-                            application.push("latest")
-                            application.push("${env.BUILD_ID}")
-                    }
-                }
-            }
-        }
-
         stage('Deploy app en kubernetes'){
             steps{
                 script {
