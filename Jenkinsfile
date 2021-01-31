@@ -20,15 +20,6 @@ pipeline{
             }
         }
 
-        stage('Analizando con Linter') {
-            
-            steps {
-                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                    sh "mega-linter-runner"
-                }
-            }
-        }
-
         stage ('Construyendo imagen (Docker)') {
             steps{
                 script {
