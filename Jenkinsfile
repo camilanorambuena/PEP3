@@ -9,9 +9,6 @@ pipeline{
         maven "mvn"
         dockerTool "docker"
     }
-    agent {
-    label 'docker' 
-    }
     stages{
         stage('Clonar de github'){
             steps{
