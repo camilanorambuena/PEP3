@@ -1,5 +1,10 @@
 pipeline{
     
+    tools{
+        maven "M1"
+        dockerTool "Docker"
+    }
+    
     environment {
         registry = "camilanorambuena/docker-image"
         registryCredential = 'dockerhub'
