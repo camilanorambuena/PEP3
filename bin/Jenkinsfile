@@ -12,14 +12,20 @@ pipeline {
             }	
         }
        
-        stage('Docker Imagen') {
+        stage('Build Docker Image') {
+            when {
+                branch 'main'
+            }
             steps {
                 script {
                     app = docker.build(DOCKER_IMAGE_NAME)
                 }
             }
         }
-        stage('Push para Docker Imagen') {
+        stage('Push Docker Image') {
+            when {
+                branch 'main'
+            }
             steps {
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', 'docker_hub_login') {
@@ -29,7 +35,10 @@ pipeline {
                 }
             }
         }
-        stage('Deploy en kubernetes') {
+        stage('DeployToProduction') {
+            when {
+                branch 'main'
+            }
             steps {
                 milestone(1)
                 kubernetesDeploy(
