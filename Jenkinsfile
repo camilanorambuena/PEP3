@@ -24,7 +24,7 @@ pipeline{
         stage ('Construyendo imagen (Docker)') {
             steps{
                 script {
-                    application = docker.build registry + ":$BUILD_NUMBER"
+                    application = docker.build("camilanorambuena/docker-image:${env.BUILD_ID}")
                 }
             }
         }
