@@ -1,31 +1,51 @@
-pipeline{
+pipeline {
     agent any
     environment {
-        registry = "camilanorambuena/docker-image"
-        registryCredential = 'dockerhub'
-        application = ''
+        DOCKER_IMAGE_NAME = "camilanorambuena/docker-image"
     }
-    tools{
-        maven "mvn"
-        dockerTool "docker"
-    }
-    stages{
-        stage('Clonar de github'){
-            steps{
-                git url: 'https://github.com/camilanorambuena/PEP3.git', branch: 'main'
-            }
+    stages {
+         stage('Build') {	
+             steps {	
+                echo 'Running build automation'	
+                sh 'chmod +x ./gradlew'	
+                sh './gradlew build --no-daemon'	
+            }	
         }
-        stage('Construyendo con maven'){
-            steps{
-                sh "mvn clean package"
+       
+        stage('Build Docker Image') {
+            when {
+                branch 'main'
             }
-        }
-
-        stage('Deploy app en kubernetes'){
-            steps{
+            steps {
                 script {
-                        kubernetesDeploy(configs: "hola-mundo.yaml", kubeconfigId: "mykubeconfig")
+                    app = docker.build(DOCKER_IMAGE_NAME)
+                }
+            }
+        }
+        stage('Push Docker Image') {
+            when {
+                branch 'main'
+            }
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker_hub_login') {
+                        app.push("${env.BUILD_NUMBER}")
+                        app.push("latest")
                     }
+                }
+            }
+        }
+        stage('DeployToProduction') {
+            when {
+                branch 'main'
+            }
+            steps {
+                milestone(1)
+                kubernetesDeploy(
+                    kubeconfigId: 'kubeconfig',
+                    configs: 'k8s_svc_deploy.yaml',
+                    enableConfigSubstitution: true
+                )
             }
         }
     }
