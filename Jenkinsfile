@@ -8,11 +8,6 @@ pipeline{
 
     agent any
 
-    tools{
-        maven "M1"
-        dockerTool "Docker"
-    }
-
     stages{
 
         stage('Clone'){
