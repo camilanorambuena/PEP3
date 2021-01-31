@@ -1,37 +1,26 @@
 pipeline{
-    
+    agent any
     environment {
         registry = "camilanorambuena/docker-image"
         registryCredential = 'dockerhub'
         application = ''
     }
-
-    agent any
-
     tools{
         maven "mvn"
     }
-
     stages{
-
-        stage('Clone'){
+        stage('Clonar de github'){
             steps{
                 git url: 'https://github.com/camilanorambuena/PEP3.git', branch: 'main'
             }
         }
-        stage('Build and Unit Tests'){
+        stage('Construyendo con maven'){
             steps{
                 sh "mvn clean package"
             }
         }
-        stage('Stationary Analysis'){
-            steps{
-                sh "mvn spotbugs:spotbugs"
-                
-            }
-        }
 
-        stage('Mega-Linter') {
+        stage('Analizando con Linter') {
             
             steps {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
@@ -40,7 +29,7 @@ pipeline{
             }
         }
 
-        stage ('Build Image') {
+        stage ('Construyendo imagen (Docker)') {
             steps{
                 script {
                     application = docker.build registry + ":$BUILD_NUMBER"
@@ -48,7 +37,7 @@ pipeline{
             }
         }
 
-        stage ('Push image') {
+        stage ('imagen Push') {
             steps {
                 
                 script {
@@ -60,7 +49,7 @@ pipeline{
             }
         }
 
-        stage('Deploy'){
+        stage('Deploy app en kubernetes'){
             steps{
                 script {
                         kubernetesDeploy(configs: "hola-mundo.yaml", kubeconfigId: "mykubeconfig")
