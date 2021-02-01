@@ -2,6 +2,7 @@ pipeline {
     agent any
     environment {
         DOCKER_IMAGE_NAME = "camilanorambuena/docker-image"
+        kubeconfig = 'kubeconfig'
     }
     stages {
          stage('Build') {	
@@ -33,7 +34,7 @@ pipeline {
             steps {
                 milestone(1)
                 kubernetesDeploy(
-                    kubeconfigId: 'kubeconfig',
+                    kubeconfigId: kubeconfig,
                     configs: 'k8s_svc_deploy.yaml',
                     enableConfigSubstitution: true
                 )
