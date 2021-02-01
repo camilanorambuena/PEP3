@@ -10,9 +10,7 @@ spec:
   - protocol: TCP
     port: 8080
     nodePort: 31000
-
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
