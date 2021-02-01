@@ -39,5 +39,6 @@ pipeline {
                 sh "sed -i 's/camilanorambuena/docker-image:${env.BUILD_ID}/g' k8s_svc_deploy.yaml"
                 step([$class: 'KubernetesEngineBuilder', projectId: env.PROJECT_ID, clusterName: env.CLUSTER_NAME, location: env.LOCATION, manifestPattern: 'k8s_svc_deploy.yaml', credentialsId: env.CREDENTIALS_ID, verifyDeployments: true])
             }
+        }
     }
 }
