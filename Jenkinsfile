@@ -30,7 +30,6 @@ pipeline {
         }
         stage('Deploy en kubernetes') {
             steps {
-                milestone(1)
                 kubernetesDeploy(
                     kubeconfigId: 'kubeconfig',
                     configs: 'deploy.yaml',
