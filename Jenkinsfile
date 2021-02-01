@@ -32,11 +32,12 @@ pipeline {
         }
         stage('Deploy en kubernetes') {
             steps {
-                kubernetesDeploy(
-                    kubeconfigId: kubeconfig,
-                    configs: 'k8s_svc_deploy.yaml',
-                    enableConfigSubstitution: true
-                )
+                script {
+                    kubernetesDeploy(
+                        kubeconfigId: kubeconfig,
+                        configs: 'k8s_svc_deploy.yaml',
+                    )
+                }
             }
         }
     }
