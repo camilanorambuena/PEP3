@@ -2,12 +2,10 @@ pipeline {
     agent any
     environment {
         DOCKER_IMAGE_NAME = "camilanorambuena/docker-image"
-        kubeconfig = 'kubeconfig'
     }
     stages {
          stage('Build') {	
-             steps {	
-                echo 'Running build automation'	
+             steps {		
                 sh 'chmod +x ./gradlew'	
                 sh './gradlew build --no-daemon'	
             }	
@@ -32,12 +30,12 @@ pipeline {
         }
         stage('Deploy en kubernetes') {
             steps {
-                script {
-                    kubernetesDeploy(
-                        kubeconfigId: kubeconfig,
-                        configs: 'k8s_svc_deploy.yaml',
-                    )
-                }
+                milestone(1)
+                kubernetesDeploy(
+                    kubeconfigId: 'kubeconfig',
+                    configs: 'k8s_svc_deploy.yaml',
+                    enableConfigSubstitution: true
+                )
             }
         }
     }
